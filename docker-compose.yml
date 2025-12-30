@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  mcp-bridge:
+    build: .
+    container_name: mcp-http-bridge
+    ports:
+      - "3100:3000"
+    volumes:
+      # Mount Docker socket to communicate with other containers
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - PORT=3000
+      - MAX_BUFFER_SIZE=1048576
+      - DEFAULT_TIMEOUT=30000
+    restart: unless-stopped
+    networks:
+      - mcp-network
+
+  # Example: Filesystem MCP Server
+  filesystem-mcp:
+    image: node:20-alpine
+    container_name: filesystem-mcp
+    command: sh -c "npm install -g @modelcontextprotocol/server-filesystem && npx @modelcontextprotocol/server-filesystem /data"
+    volumes:
+      - ./data:/data
+    stdin_open: true
+    networks:
+      - mcp-network
+
+  # Example: Fetch MCP Server  
+  fetch-mcp:
+    image: node:20-alpine
+    container_name: fetch-mcp
+    command: sh -c "npm install -g @anthropics/mcp-fetch && mcp-fetch-server"
+    stdin_open: true
+    networks:
+      - mcp-network
+
+networks:
+  mcp-network:
+    driver: bridge
