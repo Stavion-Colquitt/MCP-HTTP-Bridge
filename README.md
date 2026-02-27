@@ -26,7 +26,7 @@ Turn your MCP servers into REST APIs! This bridge allows any HTTP client to disc
 ### Installation
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/mcp-http-bridge.git
+git clone https://github.com/Stavion-Colquitt/mcp-http-bridge.git
 cd mcp-http-bridge
 npm install
 ```
